@@ -32,8 +32,8 @@ const SKY_BLUE_COLOR: Vec3 = Vec3 {
     z: 1.0,
 };
 
-const T_MIN: f64 = 0.01;
-const T_MAX: f64 = 1000.0;
+const T_MIN: f64 = 0.001;
+const T_MAX: f64 = f64::MAX;
 
 pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
     let mut rng = rand::thread_rng();
@@ -47,7 +47,8 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
                 let u = (i as f64 + random_num) / ((IMAGE_WIDTH as f64) - 1.0);
                 let v = (j as f64 + random_num) / ((IMAGE_HEIGHT as f64) - 1.0);
 
-                let mut depth: u8 = 50;
+                // limit the number rays to be 10
+                let mut depth: u8 = 10;
                 let ray = camera.get_origin_ray(u, v);
                 color = color + ray_color(&ray, &world, &mut depth);
             }
@@ -65,7 +66,7 @@ pub fn ray_color(ray: &Ray, world: &HittableList, depth: &mut u8) -> Vec3 {
     }
 
     if let Some(hit_record) = world.hit(ray, T_MIN, T_MAX) {
-        let target = hit_record.point + hit_record.normal + Vec3::random_in_unit_sphere();
+        let target = hit_record.point + hit_record.normal + Vec3::random_unit_vector();
         let ray_to_target = Ray {
             origin: hit_record.point,
             direction: target - hit_record.point,
