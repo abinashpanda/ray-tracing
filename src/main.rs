@@ -12,11 +12,11 @@ fn main() {
     let viewport_width = viewport_height * IMAGE_ASPECT_RATIO;
     let focal_length = 1.0;
 
-    let origin = Vec3::from((0.0, 0.0, 0.0));
-    let horizontal = Vec3::from((viewport_width, 0.0, 0.0));
-    let vertical = Vec3::from((0.0, viewport_height, 0.0));
+    let origin = Vec3::new(0.0, 0.0, 0.0);
+    let horizontal = Vec3::new(viewport_width, 0.0, 0.0);
+    let vertical = Vec3::new(0.0, viewport_height, 0.0);
     let lower_left_corner =
-        origin - (horizontal / 2.0) - vertical / 2.0 - Vec3::from((0.0, 0.0, focal_length));
+        origin - (horizontal / 2.0) - vertical / 2.0 - Vec3::new(0.0, 0.0, focal_length);
 
     let mut img: RgbImage = ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 

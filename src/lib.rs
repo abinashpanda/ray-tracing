@@ -25,7 +25,7 @@ const T_MAX: f64 = 100.0;
 
 pub fn ray_color(ray: &Ray) -> Vec3 {
     let sphere = Sphere {
-        center: Vec3::from((0.0, 0.0, -1.0)),
+        center: Vec3::new(0.0, 0.0, -1.0),
         radius: 0.5,
     };
 

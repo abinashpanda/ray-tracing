@@ -8,8 +8,8 @@ pub struct Ray {
 impl Ray {
     pub fn from(origin: &Vec3, direction: &Vec3) -> Ray {
         Ray {
-            origin: Vec3::from_vec(origin),
-            direction: Vec3::from_vec(direction),
+            origin: Vec3::from(origin),
+            direction: Vec3::from(direction),
         }
     }
 

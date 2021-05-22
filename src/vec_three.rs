@@ -104,15 +104,11 @@ impl ops::Div<f64> for Vec3 {
 }
 
 impl Vec3 {
-    pub fn from(tup: (f64, f64, f64)) -> Vec3 {
-        Vec3 {
-            x: tup.0,
-            y: tup.1,
-            z: tup.2,
-        }
+    pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
+        Vec3 { x, y, z }
     }
 
-    pub fn from_vec(vec: &Vec3) -> Vec3 {
+    pub fn from(vec: &Vec3) -> Vec3 {
         Vec3 {
             x: vec.x,
             y: vec.y,
@@ -129,7 +125,7 @@ impl Vec3 {
     }
 
     pub fn unit_vector(self) -> Vec3 {
-        let unit_v = Vec3::from_vec(&self);
+        let unit_v = Vec3::from(&self);
         let length = self.length();
         unit_v / length
     }
