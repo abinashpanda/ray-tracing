@@ -1,16 +1,10 @@
 use std::ops;
+
+#[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
     pub z: f64,
-}
-
-impl Copy for Vec3 {}
-
-impl Clone for Vec3 {
-    fn clone(&self) -> Self {
-        Vec3::from_vec(self)
-    }
 }
 
 impl ops::Sub<f64> for Vec3 {

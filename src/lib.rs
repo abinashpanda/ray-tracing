@@ -1,8 +1,12 @@
+pub mod hittable;
 pub mod image;
 pub mod ray;
+pub mod sphere;
 pub mod vec_three;
 
+use hittable::Hittable;
 use ray::Ray;
+use sphere::Sphere;
 use vec_three::Vec3;
 
 const WHITE_COLOR: Vec3 = Vec3 {
@@ -16,16 +20,17 @@ const SKY_BLUE_COLOR: Vec3 = Vec3 {
     z: 1.0,
 };
 
-pub fn ray_color(ray: &Ray) -> Vec3 {
-    let sphere_position = Vec3::from((0.0, 0.0, -1.0));
-    let sphere_radius = 0.5;
+const T_MIN: f64 = 0.01;
+const T_MAX: f64 = 100.0;
 
-    let t = hit_sphere(&sphere_position, sphere_radius, ray);
-    if t > 0.0 {
-        let ray_position = ray.at(t);
-        let normal = ray_position - sphere_position;
-        let unit_normal = normal.unit_vector();
-        return (unit_normal + 1.0) * 0.5;
+pub fn ray_color(ray: &Ray) -> Vec3 {
+    let sphere = Sphere {
+        center: Vec3::from((0.0, 0.0, -1.0)),
+        radius: 0.5,
+    };
+
+    if let Some(hit_record) = sphere.hit(ray, T_MIN, T_MAX) {
+        return (hit_record.normal + 1.0) * 0.5;
     }
 
     sky_color(&ray)
@@ -37,20 +42,4 @@ fn sky_color(ray: &Ray) -> Vec3 {
     let t = 0.5 * (unit_direction.y + 1.0);
     // interpolate from sky_blue_color to white using the y
     WHITE_COLOR * (1.0 - t) + SKY_BLUE_COLOR * t
-}
-
-fn hit_sphere(center: &Vec3, radius: f64, ray: &Ray) -> f64 {
-    // check for solution of this equation
-    // t^2*(rd.rd) + 2t(rd.(ro - c)) + (ro - c).(ro - c) - r^2 = 0
-    // where rd is the direction of ray, ro is the origin of ray
-    // c is the center and r is the radius of sphere
-    let origin_to_center = ray.origin - *center;
-    let a = Vec3::dot(&ray.direction, &ray.direction);
-    let half_b = Vec3::dot(&ray.direction, &origin_to_center);
-    let c = Vec3::dot(&origin_to_center, &origin_to_center) - radius * radius;
-    let discriminant = half_b * half_b - a * c;
-    match discriminant > 0.0 {
-        true => (-half_b - discriminant.sqrt()) / a,
-        false => -1.0,
-    }
 }
