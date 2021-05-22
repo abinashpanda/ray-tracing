@@ -3,6 +3,8 @@ extern crate rand;
 use rand::Rng;
 use std::ops;
 
+const S_MIN: f64 = 1e-8;
+
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     pub x: f64,
@@ -107,6 +109,14 @@ impl ops::Div<f64> for Vec3 {
 }
 
 impl Vec3 {
+    pub fn identity() -> Vec3 {
+        Vec3 {
+            x: 1.0,
+            y: 1.0,
+            z: 1.0,
+        }
+    }
+
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { x, y, z }
     }
@@ -167,5 +177,9 @@ impl Vec3 {
 
     pub fn random_unit_vector() -> Vec3 {
         Vec3::random_in_unit_sphere().unit_vector()
+    }
+
+    pub fn near_zero(&self) -> bool {
+        self.x.abs() < S_MIN && self.y.abs() < S_MIN && self.z.abs() < S_MIN
     }
 }

@@ -2,8 +2,8 @@ extern crate image;
 
 use image::{ImageBuffer, RgbImage};
 use ray_tracing::{
-    camera::Camera, hittable::HittableList, ray_trace, sphere::Sphere, vec_three::Vec3,
-    IMAGE_ASPECT_RATIO, IMAGE_HEIGHT, IMAGE_WIDTH,
+    camera::Camera, hittable::HittableList, material::LambertMaterial, ray_trace, sphere::Sphere,
+    vec_three::Vec3, IMAGE_ASPECT_RATIO, IMAGE_HEIGHT, IMAGE_WIDTH,
 };
 
 fn main() {
@@ -13,8 +13,27 @@ fn main() {
     let camera = Camera::new(IMAGE_ASPECT_RATIO, 2.0, 1.0, &origin);
 
     let mut world = HittableList::new();
-    world.add_object(Box::new(Sphere::new((0.0, 0.0, -1.0), 0.5)));
-    world.add_object(Box::new(Sphere::new((0.0, -100.5, -1.0), 100.0)));
+    world.add_object(Box::new(Sphere::new(
+        (0.0, 0.0, -1.0),
+        0.5,
+        Box::new(LambertMaterial {
+            albedo: Vec3::identity() * 0.5,
+        }),
+    )));
+    world.add_object(Box::new(Sphere::new(
+        (-1.0, -0.25, -1.5),
+        0.25,
+        Box::new(LambertMaterial {
+            albedo: Vec3::identity() * 0.5,
+        }),
+    )));
+    world.add_object(Box::new(Sphere::new(
+        (0.0, -100.5, -1.0),
+        100.0,
+        Box::new(LambertMaterial {
+            albedo: Vec3::identity() * 0.5,
+        }),
+    )));
 
     ray_trace(&camera, &world, &mut img);
 

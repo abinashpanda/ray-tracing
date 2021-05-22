@@ -1,5 +1,5 @@
-use crate::ray::Ray;
 use crate::vec_three::Vec3;
+use crate::{material::Material, ray::Ray};
 
 pub struct HitRecord {
     pub point: Vec3,
@@ -33,7 +33,7 @@ impl HitRecord {
 }
 
 pub trait Hittable {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Box<dyn Material>)>;
 }
 
 pub struct HittableList {
@@ -55,14 +55,14 @@ impl HittableList {
 }
 
 impl Hittable for HittableList {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
-        let mut hit_record: Option<HitRecord> = None;
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Box<dyn Material>)> {
+        let mut hit_record: Option<(HitRecord, &Box<dyn Material>)> = None;
         let mut closest_so_far = t_max;
 
         for object in self.objects.iter() {
-            if let Some(temp_hit_record) = object.hit(ray, t_min, closest_so_far) {
+            if let Some((temp_hit_record, material)) = object.hit(ray, t_min, closest_so_far) {
                 closest_so_far = temp_hit_record.t;
-                hit_record = Some(temp_hit_record);
+                hit_record = Some((temp_hit_record, material));
             };
         }
 

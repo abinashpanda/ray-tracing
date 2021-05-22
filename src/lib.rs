@@ -4,6 +4,7 @@ extern crate rand;
 pub mod camera;
 pub mod hittable;
 pub mod image;
+pub mod material;
 pub mod ray;
 pub mod sphere;
 pub mod vec_three;
@@ -17,7 +18,7 @@ use ray::Ray;
 use vec_three::Vec3;
 
 pub const IMAGE_ASPECT_RATIO: f64 = 16.0 / 9.0;
-pub const IMAGE_WIDTH: u32 = 1024;
+pub const IMAGE_WIDTH: u32 = 400;
 pub const IMAGE_HEIGHT: u32 = ((IMAGE_WIDTH as f64) / IMAGE_ASPECT_RATIO) as u32;
 pub const SAMPLES_PER_PIXEL: u8 = 20;
 
@@ -48,7 +49,7 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
                 let v = (j as f64 + random_num) / ((IMAGE_HEIGHT as f64) - 1.0);
 
                 // limit the number rays to be 10
-                let mut depth: u8 = 10;
+                let mut depth: u8 = 50;
                 let ray = camera.get_origin_ray(u, v);
                 color = color + ray_color(&ray, &world, &mut depth);
             }
@@ -65,14 +66,11 @@ pub fn ray_color(ray: &Ray, world: &HittableList, depth: &mut u8) -> Vec3 {
         return Vec3::new(0.0, 0.0, 0.0);
     }
 
-    if let Some(hit_record) = world.hit(ray, T_MIN, T_MAX) {
-        let target = hit_record.point + hit_record.normal + Vec3::random_unit_vector();
-        let ray_to_target = Ray {
-            origin: hit_record.point,
-            direction: target - hit_record.point,
-        };
-        *depth -= 1;
-        return ray_color(&ray_to_target, world, depth) * 0.5;
+    if let Some((hit_record, material)) = world.hit(ray, T_MIN, T_MAX) {
+        if let Some((attenuation, scattered_ray)) = material.scatter(ray, &hit_record) {
+            *depth -= 1;
+            return ray_color(&scattered_ray, world, depth) * attenuation;
+        }
     }
 
     sky_color(&ray)
