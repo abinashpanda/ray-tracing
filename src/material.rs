@@ -5,7 +5,7 @@ pub trait Material {
 }
 
 pub struct LambertMaterial {
-    pub albedo: Vec3,
+    pub color: Vec3,
 }
 
 impl Material for LambertMaterial {
@@ -18,6 +18,26 @@ impl Material for LambertMaterial {
             origin: hit_record.point,
             direction: scattered_ray_direction,
         };
-        Some((self.albedo, scattered_ray))
+        Some((self.color, scattered_ray))
+    }
+}
+
+pub struct MetalMaterial {
+    pub color: Vec3,
+}
+
+impl Material for MetalMaterial {
+    fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> Option<(Vec3, Ray)> {
+        let reflected_ray = Vec3::reflect(&ray_in.direction.unit_vector(), &hit_record.normal);
+        if Vec3::dot(&reflected_ray, &hit_record.normal) > 0.0 {
+            return Some((
+                self.color,
+                Ray {
+                    origin: hit_record.point,
+                    direction: reflected_ray,
+                },
+            ));
+        }
+        None
     }
 }

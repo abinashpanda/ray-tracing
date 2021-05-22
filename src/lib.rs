@@ -41,7 +41,7 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
 
     for i in 1..IMAGE_WIDTH {
         for mut j in 1..IMAGE_HEIGHT {
-            let mut color = Vec3::new(0.0, 0.0, 0.0);
+            let mut color = Vec3::zero();
             for _ in 0..SAMPLES_PER_PIXEL {
                 let random_num: f64 = rng.gen();
 
@@ -63,14 +63,17 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
 
 pub fn ray_color(ray: &Ray, world: &HittableList, depth: &mut u8) -> Vec3 {
     if *depth == 0 {
-        return Vec3::new(0.0, 0.0, 0.0);
+        return Vec3::zero();
     }
 
     if let Some((hit_record, material)) = world.hit(ray, T_MIN, T_MAX) {
-        if let Some((attenuation, scattered_ray)) = material.scatter(ray, &hit_record) {
-            *depth -= 1;
-            return ray_color(&scattered_ray, world, depth) * attenuation;
-        }
+        return match material.scatter(ray, &hit_record) {
+            Some((attenuation, scattered_ray)) => {
+                *depth -= 1;
+                ray_color(&scattered_ray, world, depth) * attenuation
+            }
+            None => Vec3::zero(),
+        };
     }
 
     sky_color(&ray)

@@ -117,6 +117,14 @@ impl Vec3 {
         }
     }
 
+    pub fn zero() -> Vec3 {
+        Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        }
+    }
+
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { x, y, z }
     }
@@ -181,5 +189,9 @@ impl Vec3 {
 
     pub fn near_zero(&self) -> bool {
         self.x.abs() < S_MIN && self.y.abs() < S_MIN && self.z.abs() < S_MIN
+    }
+
+    pub fn reflect(vec1: &Vec3, normal: &Vec3) -> Vec3 {
+        *vec1 - *normal * 2.0 * Vec3::dot(vec1, normal)
     }
 }
