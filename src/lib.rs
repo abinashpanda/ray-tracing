@@ -1,3 +1,6 @@
+extern crate image as image_crate;
+extern crate rand;
+
 pub mod camera;
 pub mod hittable;
 pub mod image;
@@ -5,9 +8,18 @@ pub mod ray;
 pub mod sphere;
 pub mod vec_three;
 
+use crate::image::write_color;
+use camera::Camera;
 use hittable::{Hittable, HittableList};
+use image_crate::RgbImage;
+use rand::Rng;
 use ray::Ray;
 use vec_three::Vec3;
+
+pub const IMAGE_ASPECT_RATIO: f64 = 16.0 / 9.0;
+pub const IMAGE_WIDTH: u32 = 1024;
+pub const IMAGE_HEIGHT: u32 = ((IMAGE_WIDTH as f64) / IMAGE_ASPECT_RATIO) as u32;
+pub const SAMPLES_PER_PIXEL: u8 = 20;
 
 const WHITE_COLOR: Vec3 = Vec3 {
     x: 1.0,
@@ -22,6 +34,29 @@ const SKY_BLUE_COLOR: Vec3 = Vec3 {
 
 const T_MIN: f64 = 0.01;
 const T_MAX: f64 = 100.0;
+
+pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
+    let mut rng = rand::thread_rng();
+
+    for i in 1..IMAGE_WIDTH {
+        for mut j in 1..IMAGE_HEIGHT {
+            let mut color = Vec3::new(0.0, 0.0, 0.0);
+            for _ in 0..SAMPLES_PER_PIXEL {
+                let random_num: f64 = rng.gen();
+
+                let u = (i as f64 + random_num) / ((IMAGE_WIDTH as f64) - 1.0);
+                let v = (j as f64 + random_num) / ((IMAGE_HEIGHT as f64) - 1.0);
+
+                let ray = camera.get_origin_ray(u, v);
+                color = color + ray_color(&ray, &world);
+            }
+
+            // subtract IMAGE_HEIGHT - j as the we want to move the origin from top left to bottom left
+            j = IMAGE_HEIGHT - j;
+            write_color(img, i, j, &color, SAMPLES_PER_PIXEL);
+        }
+    }
+}
 
 pub fn ray_color(ray: &Ray, world: &HittableList) -> Vec3 {
     if let Some(hit_record) = world.hit(ray, T_MIN, T_MAX) {
