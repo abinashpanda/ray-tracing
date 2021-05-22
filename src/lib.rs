@@ -33,7 +33,7 @@ const SKY_BLUE_COLOR: Vec3 = Vec3 {
 };
 
 const T_MIN: f64 = 0.01;
-const T_MAX: f64 = 100.0;
+const T_MAX: f64 = 1000.0;
 
 pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
     let mut rng = rand::thread_rng();
@@ -47,8 +47,9 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
                 let u = (i as f64 + random_num) / ((IMAGE_WIDTH as f64) - 1.0);
                 let v = (j as f64 + random_num) / ((IMAGE_HEIGHT as f64) - 1.0);
 
+                let mut depth: u8 = 50;
                 let ray = camera.get_origin_ray(u, v);
-                color = color + ray_color(&ray, &world);
+                color = color + ray_color(&ray, &world, &mut depth);
             }
 
             // subtract IMAGE_HEIGHT - j as the we want to move the origin from top left to bottom left
@@ -58,9 +59,19 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
     }
 }
 
-pub fn ray_color(ray: &Ray, world: &HittableList) -> Vec3 {
+pub fn ray_color(ray: &Ray, world: &HittableList, depth: &mut u8) -> Vec3 {
+    if *depth == 0 {
+        return Vec3::new(0.0, 0.0, 0.0);
+    }
+
     if let Some(hit_record) = world.hit(ray, T_MIN, T_MAX) {
-        return (hit_record.normal + 1.0) * 0.5;
+        let target = hit_record.point + hit_record.normal + Vec3::random_in_unit_sphere();
+        let ray_to_target = Ray {
+            origin: hit_record.point,
+            direction: target - hit_record.point,
+        };
+        *depth -= 1;
+        return ray_color(&ray_to_target, world, depth) * 0.5;
     }
 
     sky_color(&ray)

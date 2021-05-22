@@ -1,3 +1,6 @@
+extern crate rand;
+
+use rand::Rng;
 use std::ops;
 
 #[derive(Debug, Copy, Clone)]
@@ -140,5 +143,25 @@ impl Vec3 {
             y: vec1.z * vec2.x - vec1.x * vec2.z,
             z: vec1.x * vec2.y - vec1.y * vec2.x,
         }
+    }
+
+    pub fn random_vec3(min: f64, max: f64) -> Vec3 {
+        let mut rng = rand::thread_rng();
+        Vec3::new(
+            rng.gen_range(min..=max),
+            rng.gen_range(min..=max),
+            rng.gen_range(min..=max),
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        let mut point: Vec3;
+        loop {
+            point = Vec3::random_vec3(-1.0, 1.0);
+            if point.length_squared() < 1.0 {
+                break;
+            }
+        }
+        point
     }
 }
