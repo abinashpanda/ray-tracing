@@ -25,9 +25,11 @@ fn main() {
     };
     let material_left = MetalMaterial {
         color: Vec3::new(0.8, 0.8, 0.8),
+        fuzz: 0.0,
     };
     let material_right = MetalMaterial {
         color: Vec3::new(0.8, 0.6, 0.2),
+        fuzz: 0.4,
     };
 
     let mut world = HittableList::new();

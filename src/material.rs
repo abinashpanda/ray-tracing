@@ -24,11 +24,13 @@ impl Material for LambertMaterial {
 
 pub struct MetalMaterial {
     pub color: Vec3,
+    pub fuzz: f64,
 }
 
 impl Material for MetalMaterial {
     fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> Option<(Vec3, Ray)> {
-        let reflected_ray = Vec3::reflect(&ray_in.direction.unit_vector(), &hit_record.normal);
+        let reflected_ray = Vec3::reflect(&ray_in.direction.unit_vector(), &hit_record.normal)
+            + Vec3::random_in_unit_sphere() * self.fuzz;
         if Vec3::dot(&reflected_ray, &hit_record.normal) > 0.0 {
             return Some((
                 self.color,
