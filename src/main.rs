@@ -1,7 +1,10 @@
 extern crate image;
 
 use image::{ImageBuffer, RgbImage};
-use ray_tracing::{image::write_color, ray::Ray, ray_color, vec_three::Vec3};
+use ray_tracing::{
+    hittable::HittableList, image::write_color, ray::Ray, ray_color, sphere::Sphere,
+    vec_three::Vec3,
+};
 
 const IMAGE_ASPECT_RATIO: f64 = 16.0 / 9.0;
 const IMAGE_WIDTH: u32 = 1024;
@@ -20,6 +23,10 @@ fn main() {
 
     let mut img: RgbImage = ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
+    let mut world = HittableList::new();
+    world.add_object(Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)));
+    world.add_object(Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0)));
+
     for i in 1..IMAGE_WIDTH {
         for j in 1..IMAGE_HEIGHT {
             let u = (i as f64) / ((IMAGE_WIDTH as f64) - 1.0);
@@ -29,7 +36,8 @@ fn main() {
             let direction = lower_left_corner + horizontal * u + vertical * v;
 
             let ray = Ray { origin, direction };
-            let color = ray_color(&ray);
+
+            let color = ray_color(&ray, &world);
 
             // subtract IMAGE_HEIGHT - j as the we want to move the origin from top left to bottom left
             write_color(&mut img, i, IMAGE_HEIGHT - j, &color);

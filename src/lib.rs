@@ -4,9 +4,8 @@ pub mod ray;
 pub mod sphere;
 pub mod vec_three;
 
-use hittable::Hittable;
+use hittable::{Hittable, HittableList};
 use ray::Ray;
-use sphere::Sphere;
 use vec_three::Vec3;
 
 const WHITE_COLOR: Vec3 = Vec3 {
@@ -23,13 +22,8 @@ const SKY_BLUE_COLOR: Vec3 = Vec3 {
 const T_MIN: f64 = 0.01;
 const T_MAX: f64 = 100.0;
 
-pub fn ray_color(ray: &Ray) -> Vec3 {
-    let sphere = Sphere {
-        center: Vec3::new(0.0, 0.0, -1.0),
-        radius: 0.5,
-    };
-
-    if let Some(hit_record) = sphere.hit(ray, T_MIN, T_MAX) {
+pub fn ray_color(ray: &Ray, world: &HittableList) -> Vec3 {
+    if let Some(hit_record) = world.hit(ray, T_MIN, T_MAX) {
         return (hit_record.normal + 1.0) * 0.5;
     }
 
