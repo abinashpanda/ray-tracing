@@ -5,6 +5,14 @@ pub struct Vec3 {
     pub z: f64,
 }
 
+impl Copy for Vec3 {}
+
+impl Clone for Vec3 {
+    fn clone(&self) -> Self {
+        Vec3::from_vec(self)
+    }
+}
+
 impl ops::Sub<f64> for Vec3 {
     type Output = Vec3;
 
@@ -13,6 +21,18 @@ impl ops::Sub<f64> for Vec3 {
             x: self.x - value,
             y: self.y - value,
             z: self.z - value,
+        }
+    }
+}
+
+impl ops::Sub<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, vec2: Vec3) -> Self::Output {
+        Vec3 {
+            x: self.x - vec2.x,
+            y: self.y - vec2.y,
+            z: self.z - vec2.z,
         }
     }
 }
