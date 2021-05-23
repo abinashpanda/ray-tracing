@@ -20,20 +20,14 @@ fn main() {
     let camera = Camera::new(IMAGE_ASPECT_RATIO, 2.0, 1.0, &origin);
 
     let material_ground = LambertMaterial {
-        color: Vec3::new(0.8, 0.8, 0.0),
+        color: Vec3::new(0.4, 0.4, 0.4),
     };
-    let material_center = LambertMaterial {
-        color: Vec3::new(0.1, 0.2, 0.5),
+    let material_left = LambertMaterial {
+        color: Vec3::new(0.1, 0.1, 0.8),
     };
-    // let material_left = MetalMaterial {
-    //     color: Vec3::new(0.8, 0.8, 0.8),
-    //     fuzz: 0.0,
-    // };
-    // let material_center = DielectricMaterial {
-    //     refraction_index: 1.5,
-    // };
-    let material_left = DielectricMaterial {
-        refraction_index: 1.5,
+    let material_center = DielectricMaterial {
+        color: Vec3::new(0.6, 0.0, 0.2),
+        refraction_index: 1.1,
     };
     let material_right = MetalMaterial {
         color: Vec3::new(0.8, 0.6, 0.2),
@@ -52,14 +46,14 @@ fn main() {
         Box::new(material_center),
     )));
     world.add_object(Box::new(Sphere::new(
-        // (-1.5, 0.0, -2.0),
-        (-1.0, 0.0, -1.0),
+        (-0.75, 0.0, -1.5),
+        // (-1.0, 0.0, -1.0),
         0.5,
         Box::new(material_left),
     )));
     world.add_object(Box::new(Sphere::new(
-        // (1.5, 0.0, -2.0),
-        (1.0, 0.0, -1.0),
+        (0.75, 0.0, -1.5),
+        // (1.0, 0.0, -1.0),
         0.5,
         Box::new(material_right),
     )));
