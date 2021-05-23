@@ -1,5 +1,7 @@
 extern crate image;
 
+use std::time::Instant;
+
 use image::{ImageBuffer, RgbImage};
 use ray_tracing::{
     camera::Camera,
@@ -44,17 +46,19 @@ fn main() {
         Box::new(material_center),
     )));
     world.add_object(Box::new(Sphere::new(
-        (-1.0, 0.0, -1.0),
+        (-1.5, 0.0, -2.0),
         0.5,
         Box::new(material_left),
     )));
     world.add_object(Box::new(Sphere::new(
-        (1.0, 0.0, -1.0),
+        (1.5, 0.0, -2.0),
         0.5,
         Box::new(material_right),
     )));
 
+    let now = Instant::now();
     ray_trace(&camera, &world, &mut img);
+    println!("ray tracing took {:.2?}", now.elapsed());
 
     img.save("output/ray_traced_image.png").unwrap();
 }
