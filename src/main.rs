@@ -6,7 +6,7 @@ use image::{ImageBuffer, RgbImage};
 use ray_tracing::{
     camera::Camera,
     hittable::HittableList,
-    material::{LambertMaterial, MetalMaterial},
+    material::{DielectricMaterial, LambertMaterial, MetalMaterial},
     ray_trace,
     sphere::Sphere,
     vec_three::Vec3,
@@ -23,15 +23,21 @@ fn main() {
         color: Vec3::new(0.8, 0.8, 0.0),
     };
     let material_center = LambertMaterial {
-        color: Vec3::new(0.7, 0.3, 0.3),
+        color: Vec3::new(0.1, 0.2, 0.5),
     };
-    let material_left = MetalMaterial {
-        color: Vec3::new(0.8, 0.8, 0.8),
-        fuzz: 0.0,
+    // let material_left = MetalMaterial {
+    //     color: Vec3::new(0.8, 0.8, 0.8),
+    //     fuzz: 0.0,
+    // };
+    // let material_center = DielectricMaterial {
+    //     refraction_index: 1.5,
+    // };
+    let material_left = DielectricMaterial {
+        refraction_index: 1.5,
     };
     let material_right = MetalMaterial {
         color: Vec3::new(0.8, 0.6, 0.2),
-        fuzz: 0.4,
+        fuzz: 0.0,
     };
 
     let mut world = HittableList::new();
@@ -46,12 +52,14 @@ fn main() {
         Box::new(material_center),
     )));
     world.add_object(Box::new(Sphere::new(
-        (-1.5, 0.0, -2.0),
+        // (-1.5, 0.0, -2.0),
+        (-1.0, 0.0, -1.0),
         0.5,
         Box::new(material_left),
     )));
     world.add_object(Box::new(Sphere::new(
-        (1.5, 0.0, -2.0),
+        // (1.5, 0.0, -2.0),
+        (1.0, 0.0, -1.0),
         0.5,
         Box::new(material_right),
     )));

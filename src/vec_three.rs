@@ -194,4 +194,12 @@ impl Vec3 {
     pub fn reflect(vec1: &Vec3, normal: &Vec3) -> Vec3 {
         *vec1 - *normal * 2.0 * Vec3::dot(vec1, normal)
     }
+
+    pub fn refract(vec1: &Vec3, normal: &Vec3, refraction_ratio: f64) -> Vec3 {
+        // -*vec1 -> negative value of the first vector
+        let cos_theta = Vec3::dot(&-(*vec1), normal).min(1.0);
+        let r_out_perp = (*vec1 + *normal * cos_theta) * refraction_ratio;
+        let r_out_parallel = *normal * -(1.0 - r_out_perp.length_squared()).abs().sqrt();
+        r_out_perp + r_out_parallel
+    }
 }
