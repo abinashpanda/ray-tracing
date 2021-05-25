@@ -187,6 +187,20 @@ impl Vec3 {
         Vec3::random_in_unit_sphere().unit_vector()
     }
 
+    pub fn random_in_unit_disk() -> Vec3 {
+        let mut rng = rand::thread_rng();
+        loop {
+            let p = Vec3 {
+                x: rng.gen_range(-1.0..=1.0),
+                y: rng.gen_range(-1.0..=1.0),
+                z: 0.0,
+            };
+            if p.length_squared() < 1.0 {
+                return p;
+            }
+        }
+    }
+
     pub fn near_zero(&self) -> bool {
         self.x.abs() < S_MIN && self.y.abs() < S_MIN && self.z.abs() < S_MIN
     }

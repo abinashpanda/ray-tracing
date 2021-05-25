@@ -20,16 +20,17 @@ use vec_three::Vec3;
 pub const IMAGE_ASPECT_RATIO: f64 = 16.0 / 9.0;
 pub const IMAGE_WIDTH: u32 = 400;
 pub const IMAGE_HEIGHT: u32 = ((IMAGE_WIDTH as f64) / IMAGE_ASPECT_RATIO) as u32;
-pub const SAMPLES_PER_PIXEL: u8 = 20;
+pub const SAMPLES_PER_PIXEL: u8 = 100;
+const MAX_RAYS: u8 = 50;
 
-const WHITE_COLOR: Vec3 = Vec3 {
+const SKY_START_COLOR: Vec3 = Vec3 {
+    x: 0.8,
+    y: 0.8,
+    z: 0.8,
+};
+const SKY_END_COLOR: Vec3 = Vec3 {
     x: 1.0,
     y: 1.0,
-    z: 1.0,
-};
-const SKY_BLUE_COLOR: Vec3 = Vec3 {
-    x: 0.5,
-    y: 0.7,
     z: 1.0,
 };
 
@@ -49,7 +50,7 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
                 let v = (j as f64 + random_num) / ((IMAGE_HEIGHT as f64) - 1.0);
 
                 // limit the number rays to be 10
-                let mut depth: u8 = 50;
+                let mut depth: u8 = MAX_RAYS;
                 let ray = camera.get_origin_ray(u, v);
                 color = color + ray_color(&ray, &world, &mut depth);
             }
@@ -83,6 +84,6 @@ fn sky_color(ray: &Ray) -> Vec3 {
     let unit_direction = ray.direction.unit_vector();
     // normalize the t to be a value between 0 and 1
     let t = 0.5 * (unit_direction.y + 1.0);
-    // interpolate from sky_blue_color to white using the y
-    WHITE_COLOR * (1.0 - t) + SKY_BLUE_COLOR * t
+    // interpolate from sky start color to end color using the y
+    SKY_END_COLOR * (1.0 - t) + SKY_START_COLOR * t
 }
