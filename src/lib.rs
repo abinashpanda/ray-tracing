@@ -17,16 +17,16 @@ use rand::Rng;
 use ray::Ray;
 use vec_three::Vec3;
 
-pub const IMAGE_ASPECT_RATIO: f64 = 16.0 / 9.0;
-pub const IMAGE_WIDTH: u32 = 400;
+pub const IMAGE_ASPECT_RATIO: f64 = 3.0 / 2.0;
+pub const IMAGE_WIDTH: u32 = 1200;
 pub const IMAGE_HEIGHT: u32 = ((IMAGE_WIDTH as f64) / IMAGE_ASPECT_RATIO) as u32;
 pub const SAMPLES_PER_PIXEL: u8 = 100;
 const MAX_RAYS: u8 = 50;
 
 const SKY_START_COLOR: Vec3 = Vec3 {
-    x: 0.8,
-    y: 0.8,
-    z: 0.8,
+    x: 0.5,
+    y: 0.7,
+    z: 1.0,
 };
 const SKY_END_COLOR: Vec3 = Vec3 {
     x: 1.0,
