@@ -21,8 +21,8 @@ fn make_scene() -> HittableList {
 
     let mut world = HittableList::new();
 
-    for a in -11..11 {
-        for b in -11..11 {
+    for a in -5..5 {
+        for b in -5..5 {
             let choose_mat: f64 = rng.gen();
             let center = Vec3::new(
                 a as f64 + 0.9 * rng.gen::<f64>(),

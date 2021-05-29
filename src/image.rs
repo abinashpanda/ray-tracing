@@ -1,7 +1,7 @@
 use crate::vec_three::Vec3;
 use image::{Rgb, RgbImage};
 
-pub fn write_color(img: &mut RgbImage, x: u32, y: u32, color: &Vec3, samples_per_pixel: u8) -> () {
+pub fn write_color(img: &mut RgbImage, x: u32, y: u32, color: &Vec3, samples_per_pixel: u32) -> () {
     let scale = 1.0 / (samples_per_pixel as f64);
     let r = (scale * color.x).sqrt();
     let g = (scale * color.y).sqrt();
