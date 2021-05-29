@@ -151,6 +151,15 @@ impl Vec3 {
         unit_v / length
     }
 
+    pub fn get(&self, i: u8) -> f64 {
+        match i {
+            0 => self.x,
+            1 => self.y,
+            2 => self.z,
+            _ => panic!("Vec3 doesn't have {} index", i),
+        }
+    }
+
     pub fn dot(vec1: &Vec3, vec2: &Vec3) -> f64 {
         vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z
     }

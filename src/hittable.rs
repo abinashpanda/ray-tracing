@@ -1,3 +1,4 @@
+use crate::aabb::AABB;
 use crate::vec_three::Vec3;
 use crate::{material::Material, ray::Ray};
 
@@ -34,6 +35,7 @@ impl HitRecord {
 
 pub trait Hittable {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Box<dyn Material>)>;
+    fn bounding_box(&self) -> Option<AABB>;
 }
 
 pub struct HittableList {
@@ -67,5 +69,23 @@ impl Hittable for HittableList {
         }
 
         hit_record
+    }
+
+    fn bounding_box(&self) -> Option<AABB> {
+        let mut temp_box: Option<AABB> = None;
+
+        for object in self.objects.iter() {
+            temp_box = match object.bounding_box() {
+                Some(bounding_box) => match temp_box {
+                    Some(temp_box_value) => {
+                        Some(AABB::surrounding_box(&bounding_box, &temp_box_value))
+                    }
+                    None => Some(bounding_box),
+                },
+                None => None,
+            }
+        }
+
+        temp_box
     }
 }

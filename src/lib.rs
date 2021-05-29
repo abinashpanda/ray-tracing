@@ -1,6 +1,7 @@
 extern crate image as image_crate;
 extern crate rand;
 
+pub mod aabb;
 pub mod camera;
 pub mod hittable;
 pub mod image;
