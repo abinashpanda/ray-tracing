@@ -3,13 +3,13 @@ use crate::{aabb::AABB, hit_record::HitRecord, material::Material, ray::Ray, vec
 pub enum Geometry {
     Sphere {
         center: Vec3,
-        radius: f64,
+        radius: f32,
         material: Material,
     },
 }
 
 impl Geometry {
-    pub fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Material)> {
+    pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<(HitRecord, &Material)> {
         match &self {
             &Geometry::Sphere {
                 center,
@@ -32,10 +32,10 @@ impl Geometry {
 
     fn _hit_sphere(
         ray: &Ray,
-        t_min: f64,
-        t_max: f64,
+        t_min: f32,
+        t_max: f32,
         center: &Vec3,
-        radius: f64,
+        radius: f32,
     ) -> Option<HitRecord> {
         let origin_to_center = ray.origin - *center;
         let a = ray.direction.length_squared();
@@ -62,7 +62,7 @@ impl Geometry {
         Some(HitRecord::new(t, &point, &outward_normal, ray))
     }
 
-    fn _bounding_box_sphere(center: &Vec3, radius: f64) -> Option<AABB> {
+    fn _bounding_box_sphere(center: &Vec3, radius: f32) -> Option<AABB> {
         Some(AABB {
             minimum: *center - Vec3::new(radius, radius, radius),
             maximum: *center + Vec3::new(radius, radius, radius),

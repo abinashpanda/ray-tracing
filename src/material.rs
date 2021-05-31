@@ -4,8 +4,8 @@ use rand::Rng;
 #[derive(Clone, Copy)]
 pub enum Material {
     Lambert { color: Vec3 },
-    Metal { color: Vec3, fuzz: f64 },
-    Dielectric { color: Vec3, refraction_index: f64 },
+    Metal { color: Vec3, fuzz: f32 },
+    Dielectric { color: Vec3, refraction_index: f32 },
 }
 
 impl Material {
@@ -41,7 +41,7 @@ impl Material {
         }
     }
 
-    fn _scatter_metal(ray_in: &Ray, hit_record: &HitRecord, fuzz: f64) -> Option<Ray> {
+    fn _scatter_metal(ray_in: &Ray, hit_record: &HitRecord, fuzz: f32) -> Option<Ray> {
         let reflected_ray = Vec3::reflect(&ray_in.direction.unit_vector(), &hit_record.normal)
             + Vec3::random_in_unit_sphere() * fuzz;
         if Vec3::dot(&reflected_ray, &hit_record.normal) > 0.0 {
@@ -53,7 +53,7 @@ impl Material {
         None
     }
 
-    fn _scatter_dialectric(ray_in: &Ray, hit_record: &HitRecord, refraction_index: f64) -> Ray {
+    fn _scatter_dialectric(ray_in: &Ray, hit_record: &HitRecord, refraction_index: f32) -> Ray {
         let mut rng = rand::thread_rng();
 
         let refraction_ratio = match hit_record.is_front_face() {
@@ -87,7 +87,7 @@ impl Material {
         }
     }
 
-    fn _shlick_approx(cosine: f64, refraction_index: f64) -> f64 {
+    fn _shlick_approx(cosine: f32, refraction_index: f32) -> f32 {
         let mut r0 = (1.0 - refraction_index) / (1.0 + refraction_index);
         r0 = r0 * r0;
         r0 + (1.0 - r0) * (1.0 - cosine).powi(5)

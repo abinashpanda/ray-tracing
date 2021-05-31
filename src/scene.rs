@@ -20,7 +20,7 @@ impl Scene {
         self.objects.clear();
     }
 
-    pub fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Material)> {
+    pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<(HitRecord, &Material)> {
         let mut hit_record: Option<(HitRecord, &Material)> = None;
         let mut closest_so_far = t_max;
 

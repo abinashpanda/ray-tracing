@@ -6,7 +6,7 @@ pub struct AABB {
 }
 
 impl AABB {
-    pub fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> bool {
+    pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> bool {
         // TODO: use the optimized hit method
         let mut t_min_found = t_min;
         let mut t_max_found = t_max;

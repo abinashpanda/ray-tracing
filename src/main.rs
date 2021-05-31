@@ -18,16 +18,16 @@ fn make_scene() -> Scene {
 
     for a in -5..5 {
         for b in -5..5 {
-            let choose_mat: f64 = rng.gen();
+            let choose_mat: f32 = rng.gen();
             let center = Vec3::new(
-                a as f64 + 0.9 * rng.gen::<f64>(),
+                a as f32 + 0.9 * rng.gen::<f32>(),
                 0.2,
-                b as f64 + 0.9 * rng.gen::<f64>(),
+                b as f32 + 0.9 * rng.gen::<f32>(),
             );
             let scene_center = Vec3::new(4.0, 0.2, 0.0);
 
-            if (center - scene_center).length() > 0.9 {
-                if choose_mat < 0.8 {
+            if (center - scene_center).length() > 4.0 {
+                if choose_mat < 0.5 {
                     let color = Vec3::random_vec3(0.0, 1.0) * Vec3::random_vec3(0.0, 1.0);
                     let material = Material::Lambert { color };
                     let sphere = Geometry::Sphere {
@@ -37,9 +37,9 @@ fn make_scene() -> Scene {
                     };
                     world.add_object(sphere);
                 }
-            } else if choose_mat < 0.95 {
+            } else if choose_mat < 0.85 {
                 let color = Vec3::random_vec3(0.5, 1.0);
-                let fuzz: f64 = rng.gen_range(0.0..=0.5);
+                let fuzz: f32 = rng.gen_range(0.0..=0.5);
                 let material = Material::Metal { color, fuzz };
                 let sphere = Geometry::Sphere {
                     center,
@@ -50,7 +50,7 @@ fn make_scene() -> Scene {
             } else {
                 let material = Material::Dielectric {
                     color: Vec3::identity(),
-                    refraction_index: 1.3,
+                    refraction_index: 1.25,
                 };
                 let sphere = Geometry::Sphere {
                     center,
@@ -64,7 +64,7 @@ fn make_scene() -> Scene {
 
     let material_1 = Material::Dielectric {
         color: Vec3::identity(),
-        refraction_index: 1.3,
+        refraction_index: 1.25,
     };
     let sphere_1 = Geometry::Sphere {
         center: Vec3::new(0.0, 1.0, 0.0),
@@ -110,7 +110,7 @@ fn make_scene() -> Scene {
 fn main() {
     let mut img: RgbImage = ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
-    let look_from = Vec3::new(13.0, 2.0, 4.0);
+    let look_from = Vec3::new(13.0, 2.0, 6.0);
     let look_at = Vec3::new(0.0, 0.0, 0.0);
     let camera = Camera::new(
         IMAGE_ASPECT_RATIO,
