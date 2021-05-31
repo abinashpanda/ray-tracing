@@ -9,11 +9,11 @@ use crate::{
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f64,
-    pub material: Box<dyn Material>,
+    pub material: Material,
 }
 
 impl Sphere {
-    pub fn new(center: (f64, f64, f64), radius: f64, material: Box<dyn Material>) -> Self {
+    pub fn new(center: (f64, f64, f64), radius: f64, material: Material) -> Self {
         Sphere {
             center: Vec3::new(center.0, center.1, center.2),
             radius,
@@ -23,7 +23,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Box<dyn Material>)> {
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Material)> {
         let origin_to_center = ray.origin - self.center;
         let a = ray.direction.length_squared();
         let half_b = Vec3::dot(&ray.direction, &origin_to_center);

@@ -34,7 +34,7 @@ impl HitRecord {
 }
 
 pub trait Hittable {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Box<dyn Material>)>;
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Material)>;
     fn bounding_box(&self) -> Option<AABB>;
 }
 
@@ -57,8 +57,8 @@ impl HittableList {
 }
 
 impl Hittable for HittableList {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Box<dyn Material>)> {
-        let mut hit_record: Option<(HitRecord, &Box<dyn Material>)> = None;
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<(HitRecord, &Material)> {
+        let mut hit_record: Option<(HitRecord, &Material)> = None;
         let mut closest_so_far = t_max;
 
         for object in self.objects.iter() {
