@@ -5,18 +5,18 @@ pub struct Camera {
     horizontal: Vec3,
     vertical: Vec3,
     lower_left_corner: Vec3,
-    lens_radius: f64,
+    lens_radius: f32,
 }
 
 impl Camera {
     pub fn new(
-        aspect_ratio: f64,
-        vertical_field_of_view: f64,
+        aspect_ratio: f32,
+        vertical_field_of_view: f32,
         look_from: &Vec3,
         look_at: &Vec3,
         vup: &Vec3,
-        aperature: f64,
-        focus_dist: f64,
+        aperature: f32,
+        focus_dist: f32,
     ) -> Self {
         let theta = vertical_field_of_view.to_radians();
         let height = (theta / 2.0).tan();
@@ -42,7 +42,7 @@ impl Camera {
         }
     }
 
-    pub fn get_origin_ray(&self, u: f64, v: f64) -> Ray {
+    pub fn get_origin_ray(&self, u: f32, v: f32) -> Ray {
         let rand_direction = Vec3::random_in_unit_disk() * self.lens_radius;
         let offset = u * rand_direction.x + v * rand_direction.y;
         // as the camera is present in the origin, the direction vector would the position of the point
