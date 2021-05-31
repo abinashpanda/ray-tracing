@@ -3,20 +3,21 @@ extern crate rand;
 
 pub mod aabb;
 pub mod camera;
-pub mod hittable;
+pub mod geometry;
+pub mod hit_record;
 pub mod image;
 pub mod material;
 pub mod ray;
-pub mod sphere;
+pub mod scene;
 pub mod vec_three;
 
 use crate::image::write_color;
 use camera::Camera;
-use hittable::{Hittable, HittableList};
 use image_crate::RgbImage;
 use pbr::ProgressBar;
 use rand::Rng;
 use ray::Ray;
+use scene::Scene;
 use vec_three::Vec3;
 
 pub const IMAGE_ASPECT_RATIO: f64 = 3.0 / 2.0;
@@ -40,7 +41,7 @@ const SKY_END_COLOR: Vec3 = Vec3 {
 const T_MIN: f64 = 0.001;
 const T_MAX: f64 = f64::MAX;
 
-pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
+pub fn ray_trace(camera: &Camera, world: &Scene, img: &mut RgbImage) {
     let mut rng = rand::thread_rng();
     let mut pb =
         ProgressBar::new((IMAGE_WIDTH * IMAGE_HEIGHT * SAMPLES_PER_PIXEL / PB_INCREMENT) as u64);
@@ -75,7 +76,7 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
     pb.finish_print("done");
 }
 
-pub fn ray_color(ray: &Ray, world: &HittableList, depth: &mut u8) -> Vec3 {
+pub fn ray_color(ray: &Ray, world: &Scene, depth: &mut u8) -> Vec3 {
     if *depth == 0 {
         return Vec3::zero();
     }

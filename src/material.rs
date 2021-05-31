@@ -1,6 +1,7 @@
-use crate::{hittable::HitRecord, ray::Ray, vec_three::Vec3};
+use crate::{hit_record::HitRecord, ray::Ray, vec_three::Vec3};
 use rand::Rng;
 
+#[derive(Clone, Copy)]
 pub enum Material {
     Lambert { color: Vec3 },
     Metal { color: Vec3, fuzz: f64 },
