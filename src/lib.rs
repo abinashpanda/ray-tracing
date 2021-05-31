@@ -46,8 +46,8 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
         ProgressBar::new((IMAGE_WIDTH * IMAGE_HEIGHT * SAMPLES_PER_PIXEL / PB_INCREMENT) as u64);
     let mut count = 0;
 
-    for i in 1..IMAGE_WIDTH {
-        for mut j in 1..IMAGE_HEIGHT {
+    for i in 0..IMAGE_WIDTH {
+        for mut j in 0..IMAGE_HEIGHT {
             let mut color = Vec3::zero();
             for _ in 0..SAMPLES_PER_PIXEL {
                 count += 1;
@@ -68,7 +68,7 @@ pub fn ray_trace(camera: &Camera, world: &HittableList, img: &mut RgbImage) {
             }
 
             // subtract IMAGE_HEIGHT - j as the we want to move the origin from top left to bottom left
-            j = IMAGE_HEIGHT - j;
+            j = IMAGE_HEIGHT - 1 - j;
             write_color(img, i as u32, j as u32, &color, SAMPLES_PER_PIXEL);
         }
     }
