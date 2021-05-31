@@ -1,5 +1,6 @@
 use crate::{aabb::AABB, hit_record::HitRecord, material::Material, ray::Ray, vec_three::Vec3};
 
+#[derive(Clone, Copy)]
 pub enum Geometry {
     Sphere {
         center: Vec3,

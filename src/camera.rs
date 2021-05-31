@@ -1,5 +1,6 @@
 use crate::{ray::Ray, vec_three::Vec3};
 
+#[derive(Clone, Copy)]
 pub struct Camera {
     origin: Vec3,
     horizontal: Vec3,

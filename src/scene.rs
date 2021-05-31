@@ -4,7 +4,7 @@ use crate::hit_record::HitRecord;
 use crate::{material::Material, ray::Ray};
 
 pub struct Scene {
-    objects: Vec<Geometry>,
+    pub objects: Vec<Geometry>,
 }
 
 impl Scene {
