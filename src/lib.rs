@@ -9,14 +9,12 @@ pub mod image;
 pub mod material;
 pub mod ray;
 pub mod scene;
+pub mod thread_pool;
 pub mod vec_three;
 
-use std::{
-    sync::{Arc, Mutex},
-    thread::{self, JoinHandle},
-};
+use std::sync::{Arc, Mutex};
 
-use crate::image::write_color;
+use crate::{image::write_color, thread_pool::ThreadPool};
 use camera::Camera;
 use image_crate::RgbImage;
 use pbr::ProgressBar;
@@ -26,12 +24,13 @@ use scene::Scene;
 use vec_three::Vec3;
 
 pub const IMAGE_ASPECT_RATIO: f32 = 3.0 / 2.0;
-pub const IMAGE_WIDTH: u32 = 800;
+pub const IMAGE_WIDTH: u32 = 1200;
 pub const IMAGE_HEIGHT: u32 = ((IMAGE_WIDTH as f32) / IMAGE_ASPECT_RATIO) as u32;
-pub const SAMPLES_PER_PIXEL: u32 = 20;
+pub const SAMPLES_PER_PIXEL: u32 = 100;
 const PB_INCREMENT: u32 = 1000;
 const MAX_RAYS: u8 = 50;
-const NUM_CHUNKS: u8 = 12;
+const NUM_CHUNKS: u8 = 80;
+const NUM_THREADS: usize = 10;
 
 const SKY_START_COLOR: Vec3 = Vec3 {
     x: 0.5,
@@ -56,7 +55,7 @@ pub fn ray_trace(camera: &Camera, world: &Scene, img: &mut RgbImage) {
     let chunk_size_width = IMAGE_WIDTH / (NUM_CHUNKS as u32);
     let chunk_size_height = IMAGE_HEIGHT / (NUM_CHUNKS as u32);
 
-    let mut handles = vec![];
+    let pool = ThreadPool::new(NUM_THREADS);
 
     let image_buffer = Arc::new(Mutex::new(vec![
         vec![Vec3::zero(); IMAGE_HEIGHT as usize];
@@ -78,11 +77,11 @@ pub fn ray_trace(camera: &Camera, world: &Scene, img: &mut RgbImage) {
             let count = Arc::clone(&count);
             let pb = Arc::clone(&pb);
 
-            let handle: JoinHandle<()> = thread::spawn(move || {
-                let start_x = (chunk_size_width * (chunk_x as u32)).max(1);
-                let end_x = (start_x + chunk_size_width).min(IMAGE_WIDTH);
-                let start_y = (chunk_size_height * (chunk_y as u32)).max(1);
-                let end_y = (start_y + chunk_size_height).min(IMAGE_HEIGHT);
+            pool.execute(move || {
+                let start_x = chunk_size_width * chunk_x as u32;
+                let end_x = start_x + chunk_size_width;
+                let start_y = chunk_size_height * chunk_y as u32;
+                let end_y = start_y + chunk_size_height;
                 let mut rng = rand::thread_rng();
 
                 let mut image_buffer = image_buffer.lock().unwrap();
@@ -117,14 +116,8 @@ pub fn ray_trace(camera: &Camera, world: &Scene, img: &mut RgbImage) {
                     }
                 }
             });
-
-            handles.push(handle);
         }
     }
-
-    handles
-        .into_iter()
-        .for_each(|handle| handle.join().unwrap());
 
     for i in 0..IMAGE_WIDTH - 1 {
         for j in 0..IMAGE_HEIGHT - 1 {
